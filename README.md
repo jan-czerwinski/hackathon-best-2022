@@ -1,0 +1,1 @@
+wykrywanie krawedzi
