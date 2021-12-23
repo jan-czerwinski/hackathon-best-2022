@@ -18,8 +18,7 @@ def main():
     start_time = datetime.datetime.now()
     
     detector = EdgeDetector(img, 5, 1, [0.2989, 0.5870, 0.1140])
-
-    filtered_img = detector.edge_detection(img)
+    filtered_img = detector.detect()
     
     end_time = datetime.datetime.now()
     process_time = (end_time - start_time).total_seconds() * 1000
