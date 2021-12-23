@@ -13,6 +13,7 @@ def main():
     
     print('Reading image')
     img = read_image(args.image_path)
+    print(f'Read image with shape{img.shape}')
 
     print('Edge detection filtering')
     start_time = datetime.datetime.now()
@@ -26,6 +27,7 @@ def main():
 
     print('Saving image')
     save_gray_image(args.save_path, filtered_img)
+    print(f'Saved image shape{filtered_img.shape}')
 
     print('Script ended')
 

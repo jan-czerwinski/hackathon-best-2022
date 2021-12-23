@@ -1,5 +1,6 @@
 import numpy as np
-from utils import convolve
+# from utils import convolve
+from scipy.ndimage.filters import convolve
 
 class EdgeDetector:
 
@@ -29,13 +30,13 @@ class EdgeDetector:
         
         teta = np.arctan2(gx, gy)
 
-        return (g, teta)
+        return g, teta
 
-    # img as ndarray with shape (width, height, channels)
+    # img as ndarray with shape (height, width, channels)
     def edge_detection(self, img: np.ndarray) -> np.ndarray:
 
         # applying grayscale to img
-        # filtered_image should be shape (width, height)
+        # filtered_image should be shape (height, width)
         filtered_image = np.dot(img[..., :3], self.rgb_weights)
 
         # apllying gaussian kernel with shape (5,5)
