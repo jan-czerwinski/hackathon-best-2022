@@ -83,9 +83,9 @@ class EdgeDetector:
         filtered_image = convolve(filtered_image, self.gaussian_kernel(size=self.size, sigma=self.sigma))
 
         # finding intensity gradient
-        filtered_image, teta = self.intensity_gradient(filtered_image)
+        filtered_image, theta = self.intensity_gradient(filtered_image)
 
-        filtered_image = self.non_max_suppression(filtered_image, teta)
+        filtered_image = self.non_max_suppression(filtered_image, theta)
 
         return filtered_image
 
