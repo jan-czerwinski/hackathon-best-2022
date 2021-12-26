@@ -5,11 +5,12 @@ from scipy.ndimage.filters import convolve
 
 class EdgeDetector:
 
-    def __init__(self, img: np.ndarray, gauss_size: int, sigma: float, rgb_weights: list) -> None:
+    def __init__(self, img: np.ndarray, gauss_size: int, sigma: float, rgb_weights: list, treshold_values: tuple) -> None:
         self.img = img
         self.size = gauss_size
         self.sigma = sigma
         self.rgb_weights = rgb_weights
+        self.low_treshold, self.high_treshold = treshold_values
 
     def gaussian_kernel(self, size: int, sigma: float) -> np.ndarray:
         half_size = int(size) // 2
@@ -72,6 +73,21 @@ class EdgeDetector:
                     pass
 
         return out_img
+    
+    def double_treshold(self, src_img: np.ndarray, low_ratio: int, high_ratio: int) -> np.ndarray:
+
+        high_grad = src_img.max() * high_ratio
+        low_grad = high_grad * low_ratio
+
+        out_img = src_img.copy()
+
+        strong_edge = np.int32(200)
+        weak_edge = np.int32(80)
+
+        out_img[out_img >= high_grad] = strong_edge
+        out_img[(out_img >= low_grad) & (out_img < high_grad)] = weak_edge
+        
+        return out_img
 
     # img as ndarray with shape (height, width, channels)
     def edge_detection(self, img: np.ndarray) -> np.ndarray:
@@ -87,6 +103,8 @@ class EdgeDetector:
         filtered_image, theta = self.intensity_gradient(filtered_image)
 
         filtered_image = self.non_max_suppression(filtered_image, theta)
+
+        filtered_image = self.double_treshold(filtered_image, self.low_treshold, self.high_treshold)
 
         return filtered_image
 
