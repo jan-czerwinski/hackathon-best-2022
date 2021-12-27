@@ -3,13 +3,18 @@ from utils import convolve
 
 
 class EdgeDetector:
-
-    def __init__(self, img: np.ndarray, gauss_size: int, sigma: float, rgb_weights: list, treshold_values: tuple) -> None:
+    def __init__(self, img: np.ndarray,
+                 gauss_size: int = 5,
+                 sigma: float = 1,
+                 rgb_weights: tuple = (0.2989, 0.5870, 0.1140),
+                 threshold_values: tuple = (0.05, 0.2),
+                 edges_vals: tuple = (80, 200), ) -> None:
         self.img = img
         self.size = gauss_size
         self.sigma = sigma
         self.rgb_weights = rgb_weights
-        self.low_treshold, self.high_treshold = treshold_values
+        self.low_threshold, self.high_threshold = threshold_values
+        self.weak_edge_val, self.strong_edge_val = edges_vals
 
     def gaussian_kernel(self, size: int, sigma: float) -> np.ndarray:
         half_size = int(size) // 2
@@ -72,7 +77,7 @@ class EdgeDetector:
                     pass
 
         return out_img
-    
+
     def double_treshold(self, src_img: np.ndarray, low_ratio: int, high_ratio: int) -> np.ndarray:
 
         high_grad = src_img.max() * high_ratio
@@ -80,12 +85,12 @@ class EdgeDetector:
 
         out_img = src_img.copy()
 
-        strong_edge = np.int32(200)
-        weak_edge = np.int32(80)
+        strong_edge = np.int32(self.strong_edge_val)
+        weak_edge = np.int32(self.weak_edge_val)
 
         out_img[out_img >= high_grad] = strong_edge
         out_img[(out_img >= low_grad) & (out_img < high_grad)] = weak_edge
-        
+
         return out_img
 
     # img as ndarray with shape (height, width, channels)
@@ -103,7 +108,7 @@ class EdgeDetector:
 
         filtered_image = self.non_max_suppression(filtered_image, theta)
 
-        filtered_image = self.double_treshold(filtered_image, self.low_treshold, self.high_treshold)
+        filtered_image = self.double_treshold(filtered_image, self.low_threshold, self.high_threshold)
 
         return filtered_image
 
