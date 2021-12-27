@@ -1,6 +1,5 @@
 import numpy as np
-# from utils import convolve
-from scipy.ndimage.filters import convolve
+from utils import convolve
 
 
 class EdgeDetector:
