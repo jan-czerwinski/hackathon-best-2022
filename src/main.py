@@ -18,7 +18,7 @@ def main():
     print('Edge detection filtering')
     start_time = datetime.datetime.now()
     
-    detector = EdgeDetector(img, 5, 1, [0.2989, 0.5870, 0.1140])
+    detector = EdgeDetector(img, gauss_size=5, sigma=1, rgb_weights=[0.2989, 0.5870, 0.1140], treshold_values=(0.05, 0.2))
     filtered_img = detector.detect()
     
     end_time = datetime.datetime.now()
