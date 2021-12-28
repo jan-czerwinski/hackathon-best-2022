@@ -51,19 +51,15 @@ class EdgeDetector:
                     q = 255
                     r = 255
 
-                    # angle 0
                     if (0 <= angle[i, j] < 22.5) or (157.5 <= angle[i, j] <= 180):
                         q = src_img[i, j + 1]
                         r = src_img[i, j - 1]
-                    # angle 45
                     elif 22.5 <= angle[i, j] < 67.5:
                         q = src_img[i + 1, j - 1]
                         r = src_img[i - 1, j + 1]
-                    # angle 90
                     elif 67.5 <= angle[i, j] < 112.5:
                         q = src_img[i + 1, j]
                         r = src_img[i - 1, j]
-                    # angle 135
                     elif 112.5 <= angle[i, j] < 157.5:
                         q = src_img[i - 1, j - 1]
                         r = src_img[i + 1, j + 1]
@@ -92,7 +88,7 @@ class EdgeDetector:
         out_img[(out_img >= low_grad) & (out_img < high_grad)] = weak_edge
 
         return out_img
-    
+
     def edge_tracking(self, src_img: np.ndarray) -> np.ndarray:
         src_width, src_height = src_img.shape
 
@@ -100,16 +96,16 @@ class EdgeDetector:
 
         for i in range(1, src_width - 1):
             for j in range(1, src_height - 1):
-                if (src_img[i,j] == self.weak_edge_val):
+                if (src_img[i, j] == self.weak_edge_val):
                     try:
-                        if ((src_img[i+1, j-1] == self.strong_edge_val) 
-                        or (src_img[i+1, j] == self.strong_edge_val) 
-                        or (src_img[i+1, j+1] == self.strong_edge_val)
-                        or (src_img[i, j-1] == self.strong_edge_val) 
-                        or (src_img[i, j+1] == self.strong_edge_val)
-                        or (src_img[i-1, j-1] == self.strong_edge_val) 
-                        or (src_img[i-1, j] == self.strong_edge_val) 
-                        or (src_img[i-1, j+1] == self.strong_edge_val)):
+                        if ((src_img[i + 1, j - 1] == self.strong_edge_val)
+                                or (src_img[i + 1, j] == self.strong_edge_val)
+                                or (src_img[i + 1, j + 1] == self.strong_edge_val)
+                                or (src_img[i, j - 1] == self.strong_edge_val)
+                                or (src_img[i, j + 1] == self.strong_edge_val)
+                                or (src_img[i - 1, j - 1] == self.strong_edge_val)
+                                or (src_img[i - 1, j] == self.strong_edge_val)
+                                or (src_img[i - 1, j + 1] == self.strong_edge_val)):
                             out_img[i, j] = self.strong_edge_val
                         else:
                             out_img[i, j] = 0
@@ -125,7 +121,7 @@ class EdgeDetector:
         # filtered_image should be shape (height, width)
         filtered_image = np.dot(img[..., :3], self.rgb_weights)
 
-        # apllying gaussian kernel with shape (5,5)
+        # applying gaussian kernel with shape (5,5)
         filtered_image = convolve(filtered_image, self.gaussian_kernel(size=self.size, sigma=self.sigma))
 
         # finding intensity gradient
