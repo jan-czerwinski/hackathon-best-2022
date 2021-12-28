@@ -23,7 +23,7 @@ class EdgeDetector:
         return g
 
     def intensity_gradient(self, img: np.ndarray):
-        sobel_filter_x = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]], np.float32)
+        sobel_filter_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], np.float32)
         sobel_filter_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], np.float32)
 
         gx = convolve(img, sobel_filter_x)
@@ -34,7 +34,7 @@ class EdgeDetector:
         # normalization
         g = g / g.max() * 255
 
-        theta = np.arctan2(gx, gy)
+        theta = np.arctan2(gy, gx)
 
         return g, theta
 
