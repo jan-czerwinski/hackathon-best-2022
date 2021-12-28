@@ -8,7 +8,7 @@ class EdgeDetector:
                  sigma: float = 1,
                  rgb_weights: tuple = (0.2989, 0.5870, 0.1140),
                  threshold_values: tuple = (0.05, 0.2),
-                 edges_vals: tuple = (80, 200), ) -> None:
+                 edges_vals: tuple = (80, 255), ) -> None:
         self.img = img
         self.size = gauss_size
         self.sigma = sigma
@@ -92,6 +92,31 @@ class EdgeDetector:
         out_img[(out_img >= low_grad) & (out_img < high_grad)] = weak_edge
 
         return out_img
+    
+    def edge_tracking(self, src_img: np.ndarray) -> np.ndarray:
+        src_width, src_height = src_img.shape
+
+        out_img = src_img.copy()
+
+        for i in range(1, src_width - 1):
+            for j in range(1, src_height - 1):
+                if (src_img[i,j] == self.weak_edge_val):
+                    try:
+                        if ((src_img[i+1, j-1] == self.strong_edge_val) 
+                        or (src_img[i+1, j] == self.strong_edge_val) 
+                        or (src_img[i+1, j+1] == self.strong_edge_val)
+                        or (src_img[i, j-1] == self.strong_edge_val) 
+                        or (src_img[i, j+1] == self.strong_edge_val)
+                        or (src_img[i-1, j-1] == self.strong_edge_val) 
+                        or (src_img[i-1, j] == self.strong_edge_val) 
+                        or (src_img[i-1, j+1] == self.strong_edge_val)):
+                            out_img[i, j] = self.strong_edge_val
+                        else:
+                            out_img[i, j] = 0
+                    except IndexError as e:
+                        pass
+
+        return out_img
 
     # img as ndarray with shape (height, width, channels)
     def edge_detection(self, img: np.ndarray) -> np.ndarray:
@@ -109,6 +134,8 @@ class EdgeDetector:
         filtered_image = self.non_max_suppression(filtered_image, theta)
 
         filtered_image = self.double_treshold(filtered_image, self.low_threshold, self.high_threshold)
+
+        filtered_image = self.edge_tracking(filtered_image)
 
         return filtered_image
 
